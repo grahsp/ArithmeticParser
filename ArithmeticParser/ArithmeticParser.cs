@@ -19,7 +19,22 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 
     public Expression Parse()
     {
-        return ParseNumber();
+        return ParseExpression();
+    }
+
+    private Expression ParseExpression()
+    {
+        var left = ParseNumber();
+
+        while (_position < _tokens.Count && Current.Type is ArithmeticType.Plus or ArithmeticType.Minus)
+        {
+            var operation = Consume(Current.Type);
+            var right = ParseNumber();
+            
+            left = new Binary(left, operation, right);
+        }
+
+        return left;
     }
 
     private Expression ParseNumber()
@@ -32,6 +47,8 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 public enum ArithmeticType
 {
     Number,
+    Plus,
+    Minus,
     Whitespace,
 }
 
@@ -44,4 +61,21 @@ public class Number(int value): Expression
 {
     public int Value { get; } = value;
     public override int Evaluate() => Value;
+}
+
+public class Binary(Expression left, Token<ArithmeticType> @operator, Expression right): Expression
+{
+    private Token<ArithmeticType> Operator { get; } = @operator;
+    private Expression Left { get; } = left;
+    private Expression Right { get; } = right;
+    
+    public override int Evaluate()
+    {
+        return Operator.Type switch
+        {
+            ArithmeticType.Plus => Left.Evaluate() + Right.Evaluate(),
+            ArithmeticType.Minus => Left.Evaluate() - Right.Evaluate(),
+            _ => throw new ArgumentException("Invalid operator")
+        };
+    }
 }

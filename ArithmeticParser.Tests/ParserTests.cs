@@ -24,6 +24,54 @@ public sealed class ParserTests
         // Assert
         Assert.AreEqual(source, result);
     }
+    
+    [DataTestMethod]
+    [DataRow("1", "2", 3)]
+    [DataRow("0", "5", 5)]
+    [DataRow("9", "0", 9)]
+    public void Parse_ExpressionContainingAddition(string left, string right, int expected)
+    {
+        // Arrange
+        var tokens = new Token<ArithmeticType>[]
+        {
+            new(ArithmeticType.Number, left),
+            new(ArithmeticType.Plus, "+"),
+            new(ArithmeticType.Number, right)
+        };
+        
+        var parser = new ArithmeticParser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+        
+        // Assert
+        Assert.AreEqual(expected, result);
+    }
+    
+    [DataTestMethod]
+    [DataRow("1", "2", -1)]
+    [DataRow("8", "5", 3)]
+    [DataRow("9", "0", 9)]
+    public void Parse_ExpressionContainingSubtraction(string left, string right, int expected)
+    {
+        // Arrange
+        var tokens = new Token<ArithmeticType>[]
+        {
+            new(ArithmeticType.Number, left),
+            new(ArithmeticType.Minus, "-"),
+            new(ArithmeticType.Number, right)
+        };
+        
+        var parser = new ArithmeticParser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+        
+        // Assert
+        Assert.AreEqual(expected, result);
+    }
 }
 
 
