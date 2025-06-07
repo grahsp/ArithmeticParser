@@ -7,12 +7,13 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     private readonly List<Token<TokenType>> _tokens = tokens.ToList();
     private int _position = 0;
 
-    private Token<TokenType> Current => _tokens[_position];
+    private Token<TokenType> CurrentToken => _tokens[_position];
+    private bool IsAtEnd => _position == _tokens.Count - 1;
 
-    private Token<TokenType> Consume(TokenType type)
+    private Token<TokenType> ConsumeToken(TokenType type)
     {
-        if (Current.Type != type)
-            throw new Exception($"Expected {type} but got {Current.Type}");
+        if (CurrentToken.Type != type)
+            throw new Exception($"Expected {type} but got {CurrentToken.Type}");
 
         return _tokens[_position++];
     }
@@ -26,9 +27,9 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     {
         var left = ParseTerm();
 
-        while (_position < _tokens.Count && Current.Type is TokenType.Plus or TokenType.Minus)
+        while (!IsAtEnd && CurrentToken.Type is TokenType.Plus or TokenType.Minus)
         {
-            var operation = Consume(Current.Type);
+            var operation = ConsumeToken(CurrentToken.Type);
             var right = ParseTerm();
             
             left = new BinaryExpression(operation, left, right);
@@ -41,9 +42,9 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     {
         var left = ParseFactor();
 
-        while (_position < _tokens.Count && Current.Type is TokenType.Multiply or TokenType.Divide)
+        while (!IsAtEnd && CurrentToken.Type is TokenType.Multiply or TokenType.Divide)
         {
-            var @operator = Consume(Current.Type);
+            var @operator = ConsumeToken(CurrentToken.Type);
             var right = ParseFactor();
 
             left = new BinaryExpression(@operator, left, right);
@@ -54,9 +55,9 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
 
     private IExpression ParseFactor()
     {
-        if (Current.Type is TokenType.Plus or TokenType.Minus)
+        if (CurrentToken.Type is TokenType.Plus or TokenType.Minus)
         {
-            var @operator = Consume(Current.Type);
+            var @operator = ConsumeToken(CurrentToken.Type);
             var operand = ParsePrimary();
             
             return new UnaryExpression(@operator, operand);
@@ -67,18 +68,18 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
 
     private IExpression ParsePrimary()
     {
-        if (Current.Type is TokenType.Number)
-            return new LiteralExpression(int.Parse(Consume(TokenType.Number).Value));
+        if (CurrentToken.Type is TokenType.Number)
+            return new LiteralExpression(int.Parse(ConsumeToken(TokenType.Number).Value));
 
-        if (Current.Type is TokenType.LeftParenthesis)
+        if (CurrentToken.Type is TokenType.LeftParenthesis)
         {
-            Consume(TokenType.LeftParenthesis);
+            ConsumeToken(TokenType.LeftParenthesis);
             var expression = ParseExpression();
-            Consume(TokenType.RightParenthesis);
+            ConsumeToken(TokenType.RightParenthesis);
 
             return expression;
         }
         
-        throw new Exception($"Expected a number or parenthesis but got {Current.Type}");
+        throw new Exception($"Unexpected token '{CurrentToken.Value}' of type {CurrentToken.Type}");
     }
 }
