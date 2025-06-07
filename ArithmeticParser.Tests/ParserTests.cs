@@ -130,11 +130,11 @@ public sealed class ParserTests
          {
              new(ArithmeticType.Number, "2"),
              new(ArithmeticType.Multiply, "*"),
-             new(ArithmeticType.LeftParanthesis, "("),
+             new(ArithmeticType.LeftParenthesis, "("),
              new(ArithmeticType.Number, "2"),
              new(ArithmeticType.Plus, "+"),
              new(ArithmeticType.Number, "3"),
-             new(ArithmeticType.RightParanthesis, ")"),
+             new(ArithmeticType.RightParenthesis, ")"),
          };
          
          var parser = new ArithmeticParser(tokens);
@@ -144,7 +144,29 @@ public sealed class ParserTests
          var result = expression.Evaluate();
          
          // Assert
-         Assert.AreEqual(10, result);       
+         Assert.AreEqual(10, result); 
+    }
+
+    [TestMethod]
+    public void Parse_ExpressionContainingUnaryOperator()
+    {
+          // Arrange
+          var tokens = new Token<ArithmeticType>[]
+          {
+              new(ArithmeticType.Number, "2"),
+              new(ArithmeticType.Minus, "-"),
+              new(ArithmeticType.Minus, "-"),
+              new(ArithmeticType.Number, "3"),
+          };
+          
+          var parser = new ArithmeticParser(tokens);
+  
+          // Act
+          var expression = parser.Parse();
+          var result = expression.Evaluate();
+          
+          // Assert
+          Assert.AreEqual(5, result);        
     }
 }
 

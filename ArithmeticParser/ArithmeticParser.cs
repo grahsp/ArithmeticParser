@@ -43,10 +43,10 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 
         while (_position < _tokens.Count && Current.Type is ArithmeticType.Multiply or ArithmeticType.Divide)
         {
-            var operation = Consume(Current.Type);
+            var @operator = Consume(Current.Type);
             var right = ParseFactor();
 
-            left = new Binary(left, operation, right);
+            left = new Binary(left, @operator, right);
         }
 
         return left;
@@ -54,14 +54,27 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 
     private Expression ParseFactor()
     {
+        if (Current.Type is ArithmeticType.Plus or ArithmeticType.Minus)
+        {
+            var @operator = Consume(Current.Type);
+            var right = ParsePrimary();
+            
+            return new Unary(@operator, right);
+        }
+
+        return ParsePrimary();
+    }
+
+    private Expression ParsePrimary()
+    {
         if (Current.Type is ArithmeticType.Number)
             return new Number(int.Parse(Consume(ArithmeticType.Number).Value));
 
-        if (Current.Type is ArithmeticType.LeftParanthesis)
+        if (Current.Type is ArithmeticType.LeftParenthesis)
         {
-            Consume(ArithmeticType.LeftParanthesis);
+            Consume(ArithmeticType.LeftParenthesis);
             var expression = ParseExpression();
-            Consume(ArithmeticType.RightParanthesis);
+            Consume(ArithmeticType.RightParenthesis);
 
             return expression;
         }
@@ -77,8 +90,8 @@ public enum ArithmeticType
     Minus,
     Multiply,
     Divide,
-    LeftParanthesis,
-    RightParanthesis,
+    LeftParenthesis,
+    RightParenthesis,
     Whitespace,
 }
 
@@ -102,6 +115,22 @@ public class Binary(Expression left, Token<ArithmeticType> @operator, Expression
             ArithmeticType.Minus => Left.Evaluate() - Right.Evaluate(),
             ArithmeticType.Multiply => Left.Evaluate() * Right.Evaluate(),
             ArithmeticType.Divide => Left.Evaluate() / Right.Evaluate(),
+            _ => throw new ArgumentException("Invalid operator")
+        };
+    }
+}
+
+public class Unary(Token<ArithmeticType> @operator, Expression right) : Expression
+{
+    public Token<ArithmeticType> Operator { get; } = @operator;
+    private Expression Right { get; } = right;
+
+    public override int Evaluate()
+    {
+        return Operator.Type switch
+        {
+            ArithmeticType.Plus => Right.Evaluate(),
+            ArithmeticType.Minus => -Right.Evaluate(),
             _ => throw new ArgumentException("Invalid operator")
         };
     }
