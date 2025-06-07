@@ -103,9 +103,9 @@ public abstract class Expression
 
 public class Binary(Expression left, Token<ArithmeticType> @operator, Expression right): Expression
 {
-    private Token<ArithmeticType> Operator { get; } = @operator;
-    private Expression Left { get; } = left;
-    private Expression Right { get; } = right;
+    public Token<ArithmeticType> Operator { get; } = @operator;
+    public Expression Left { get; } = left;
+    public Expression Right { get; } = right;
     
     public override int Evaluate()
     {
@@ -123,7 +123,7 @@ public class Binary(Expression left, Token<ArithmeticType> @operator, Expression
 public class Unary(Token<ArithmeticType> @operator, Expression right) : Expression
 {
     public Token<ArithmeticType> Operator { get; } = @operator;
-    private Expression Right { get; } = right;
+    public Expression Right { get; } = right;
 
     public override int Evaluate()
     {
