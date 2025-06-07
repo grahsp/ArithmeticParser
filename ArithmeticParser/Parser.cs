@@ -1,3 +1,4 @@
+using System.Globalization;
 using Lexer;
 
 namespace ArithmeticParser;
@@ -8,7 +9,7 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     private int _position = 0;
 
     private Token<TokenType> CurrentToken => _tokens[_position];
-    private bool IsAtEnd => _position == _tokens.Count - 1;
+    private bool IsAtEnd => _position >= _tokens.Count;
 
     private Token<TokenType> ConsumeToken(TokenType type)
     {
@@ -69,7 +70,7 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     private IExpression ParsePrimary()
     {
         if (CurrentToken.Type is TokenType.Number)
-            return new LiteralExpression(int.Parse(ConsumeToken(TokenType.Number).Value));
+            return new LiteralExpression(double.Parse(ConsumeToken(TokenType.Number).Value));
 
         if (CurrentToken.Type is TokenType.LeftParenthesis)
         {

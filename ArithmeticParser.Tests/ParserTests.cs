@@ -1,4 +1,5 @@
-﻿using Lexer;
+﻿using System.Globalization;
+using Lexer;
 
 namespace ArithmeticParser.Tests;
 
@@ -9,11 +10,12 @@ public sealed class ParserTests
     [DataRow(123)]
     [DataRow(-27)]
     [DataRow(+81)]
+    [DataRow(0.5)]
     [DataRow(int.MaxValue)]
-    public void Parse_SingleNumber_CorrectEvaluationAndTree(int number)
+    public void Parse_SingleNumber_CorrectEvaluationAndTree(double number)
     {
         // Arrange
-        var token = new Token<TokenType>(TokenType.Number, number.ToString());
+        var token = new Token<TokenType>(TokenType.Number, number.ToString(CultureInfo.InvariantCulture));
         var parser = new Parser([token]);
 
         // Act
@@ -29,14 +31,15 @@ public sealed class ParserTests
     [DataRow(1, -2, -1)]
     [DataRow(-2, 5, 3)]
     [DataRow(9, 8, 17)]
-    public void Parse_Addition_CorrectEvaluationAndTree(int left, int right, int expected)
+    [DataRow(0.2, 0.5, 0.7)]
+    public void Parse_Addition_CorrectEvaluationAndTree(double left, double right, double expected)
     {
         // Arrange
         var tokens = new Token<TokenType>[]
         {
-            new(TokenType.Number, left.ToString()),
+            new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
             new(TokenType.Plus, "+"),
-            new(TokenType.Number, right.ToString())
+            new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
         
         var parser = new Parser(tokens);
@@ -54,12 +57,12 @@ public sealed class ParserTests
         var root = (BinaryExpression)expression;
         Assert.AreEqual(TokenType.Plus, root.Operator.Type);
         
-        // Left child of root should be Number equal to left
+        // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(root.Left);
         Assert.AreEqual(((LiteralExpression)root.Left).Value, left);
         
         
-        // Right child of root should be Number equal to right
+        // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(root.Right);
         Assert.AreEqual(((LiteralExpression)root.Right).Value, right);
     }
@@ -68,14 +71,15 @@ public sealed class ParserTests
     [DataRow(5, -2, 7)]
     [DataRow(-2, 5, -7)]
     [DataRow(9, 8, 1)]
-    public void Parse_Subtraction_CorrectEvaluationAndTree(int left, int right, int expected)
+    [DataRow(9.2, 8.7, 0.5)]
+    public void Parse_Subtraction_CorrectEvaluationAndTree(double left, double right, double expected)
     {
         // Arrange
         var tokens = new Token<TokenType>[]
         {
-            new(TokenType.Number, left.ToString()),
+            new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
             new(TokenType.Minus, "-"),
-            new(TokenType.Number, right.ToString())
+            new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
             
         var parser = new Parser(tokens);
@@ -93,12 +97,12 @@ public sealed class ParserTests
         var binary = (BinaryExpression)expression;
         Assert.AreEqual(TokenType.Minus, binary.Operator.Type);
             
-        // Left child of root should be Number equal to left
+        // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
         Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
             
             
-        // Right child of root should be Number equal to right
+        // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
         Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
     }
@@ -107,14 +111,15 @@ public sealed class ParserTests
     [DataRow(5, -2, -10)]
     [DataRow(-2, 5, -10)]
     [DataRow(4, 3, 12)]
-    public void Parse_Multiplication_CorrectEvaluationAndTree(int left, int right, int expected)
+    [DataRow(2.5, 3, 7.5)]
+    public void Parse_Multiplication_CorrectEvaluationAndTree(double left, double right, double expected)
     {
         // Arrange
         var tokens = new Token<TokenType>[]
         {
-            new(TokenType.Number, left.ToString()),
+            new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
             new(TokenType.Multiply, "*"),
-            new(TokenType.Number, right.ToString())
+            new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
             
         var parser = new Parser(tokens);
@@ -132,12 +137,12 @@ public sealed class ParserTests
         var binary = (BinaryExpression)expression;
         Assert.AreEqual(TokenType.Multiply, binary.Operator.Type);
             
-        // Left child of root should be Number equal to left
+        // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
         Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
             
             
-        // Right child of root should be Number equal to right
+        // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
         Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
     }
@@ -146,14 +151,15 @@ public sealed class ParserTests
     [DataRow(4, -2, -2)]
     [DataRow(-9, 3, -3)]
     [DataRow(4, 4, 1)]
-    public void Parse_Division_CorrectEvaluationAndTree(int left, int right, int expected)
+    [DataRow(5, 2, 2.5)]
+    public void Parse_Division_CorrectEvaluationAndTree(double left, double right, double expected)
     {
         // Arrange
         var tokens = new Token<TokenType>[]
         {
-            new(TokenType.Number, left.ToString()),
+            new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
             new(TokenType.Divide, "/"),
-            new(TokenType.Number, right.ToString())
+            new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
 
         var parser = new Parser(tokens);
@@ -171,12 +177,12 @@ public sealed class ParserTests
         var binary = (BinaryExpression)expression;
         Assert.AreEqual(TokenType.Divide, binary.Operator.Type);
 
-        // Left child of root should be Number equal to left
+        // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
         Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
 
 
-        // Right child of root should be Number equal to right
+        // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
         Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
     }
@@ -188,9 +194,9 @@ public sealed class ParserTests
         var tokens = new Token<TokenType>[]
         {
             new(TokenType.LeftParenthesis, "("),
-            new(TokenType.Number, "3"),
+            new(TokenType.Number, "4"),
             new(TokenType.Multiply, "*"),
-            new(TokenType.Number, "-2"),
+            new(TokenType.Number, "-2.5"),
             new(TokenType.RightParenthesis, ")"),
             new(TokenType.Divide, "/"),
             new(TokenType.Number, "2"),
@@ -204,14 +210,14 @@ public sealed class ParserTests
     
         
         // Assert
-        Assert.AreEqual(-3, result);
+        Assert.AreEqual(-5, result);
     
         // Root should be Binary with Divide
-        Assert.IsInstanceOfType(expression, typeof(BinaryExpression));
+        Assert.IsInstanceOfType<BinaryExpression>(expression);
         var root = (BinaryExpression)expression;
         Assert.AreEqual(TokenType.Divide, root.Operator.Type);
         
-        // Right child of root should be Number(2)
+        // Right child of root should be Literal(2)
         Assert.IsInstanceOfType<LiteralExpression>(root.Right);
         Assert.AreEqual(2, ((LiteralExpression)root.Right).Value);
         
@@ -220,12 +226,12 @@ public sealed class ParserTests
         var leftNode = (BinaryExpression)root.Left;
         Assert.AreEqual(TokenType.Multiply, leftNode.Operator.Type);
         
-        // Left child of leftNode should be Number(3)
+        // Left child of leftNode should be Literal(3)
         Assert.IsInstanceOfType<LiteralExpression>(leftNode.Left);
-        Assert.AreEqual(3, ((LiteralExpression)leftNode.Left).Value);
+        Assert.AreEqual(4, ((LiteralExpression)leftNode.Left).Value);
         
-        // Right child of leftNode should be Number(-2)
+        // Right child of leftNode should be Literal(-2)
         Assert.IsInstanceOfType<LiteralExpression>(leftNode.Right);
-        Assert.AreEqual(-2, ((LiteralExpression)leftNode.Right).Value);
+        Assert.AreEqual(-2.5, ((LiteralExpression)leftNode.Right).Value);
     }
 }

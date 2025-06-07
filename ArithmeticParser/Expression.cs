@@ -4,7 +4,7 @@ namespace ArithmeticParser;
 
 public interface IExpression
 {
-    int Evaluate();
+    double Evaluate();
 }
 
 public class BinaryExpression(Token<TokenType> @operator, IExpression left, IExpression right) : IExpression
@@ -13,7 +13,7 @@ public class BinaryExpression(Token<TokenType> @operator, IExpression left, IExp
     public IExpression Left { get; } = left;
     public IExpression Right { get; } = right;
 
-    public int Evaluate()
+    public double Evaluate()
     {
         return Operator.Type switch
         {
@@ -31,7 +31,7 @@ public class UnaryExpression(Token<TokenType> @operator, IExpression operand) : 
     public Token<TokenType> Operator { get; } = @operator;
     public IExpression Operand { get; } = operand;
 
-    public int Evaluate()
+    public double Evaluate()
     {
         return Operator.Type switch
         {
@@ -42,9 +42,9 @@ public class UnaryExpression(Token<TokenType> @operator, IExpression operand) : 
     }
 }
 
-public class LiteralExpression(int value) : IExpression
+public class LiteralExpression(double value) : IExpression
 {
-    public int Value { get; } = value;
+    public double Value { get; } = value;
     
-    public int Evaluate() => Value;
+    public double Evaluate() => Value;
 }
