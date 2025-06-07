@@ -24,12 +24,12 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 
     private Expression ParseExpression()
     {
-        var left = ParseNumber();
+        var left = ParseTerm();
 
         while (_position < _tokens.Count && Current.Type is ArithmeticType.Plus or ArithmeticType.Minus)
         {
             var operation = Consume(Current.Type);
-            var right = ParseNumber();
+            var right = ParseTerm();
             
             left = new Binary(left, operation, right);
         }
@@ -37,7 +37,22 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
         return left;
     }
 
-    private Expression ParseNumber()
+    private Expression ParseTerm()
+    {
+        var left = ParseFactor();
+
+        while (_position < _tokens.Count && Current.Type is ArithmeticType.Multiply or ArithmeticType.Divide)
+        {
+            var operation = Consume(Current.Type);
+            var right = ParseFactor();
+
+            left = new Binary(left, operation, right);
+        }
+
+        return left;
+    }
+
+    private Expression ParseFactor()
     {
         var token = Consume(ArithmeticType.Number);
         return new Number(int.Parse(token.Value));
@@ -49,6 +64,8 @@ public enum ArithmeticType
     Number,
     Plus,
     Minus,
+    Multiply,
+    Divide,
     Whitespace,
 }
 
@@ -57,11 +74,6 @@ public abstract class Expression
     public abstract int Evaluate();
 }
 
-public class Number(int value): Expression
-{
-    public int Value { get; } = value;
-    public override int Evaluate() => Value;
-}
 
 public class Binary(Expression left, Token<ArithmeticType> @operator, Expression right): Expression
 {
@@ -75,7 +87,15 @@ public class Binary(Expression left, Token<ArithmeticType> @operator, Expression
         {
             ArithmeticType.Plus => Left.Evaluate() + Right.Evaluate(),
             ArithmeticType.Minus => Left.Evaluate() - Right.Evaluate(),
+            ArithmeticType.Multiply => Left.Evaluate() * Right.Evaluate(),
+            ArithmeticType.Divide => Left.Evaluate() / Right.Evaluate(),
             _ => throw new ArgumentException("Invalid operator")
         };
     }
+}
+
+public class Number(int value): Expression
+{
+    public int Value { get; } = value;
+    public override int Evaluate() => Value;
 }

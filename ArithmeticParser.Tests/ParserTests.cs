@@ -72,6 +72,55 @@ public sealed class ParserTests
         // Assert
         Assert.AreEqual(expected, result);
     }
+    
+    
+    [DataTestMethod]
+    [DataRow("1", "2", 2)]
+    [DataRow("0", "5", 0)]
+    [DataRow("2", "10", 20)]
+    public void Parse_ExpressionContainingMultiplication(string left, string right, int expected)
+    {
+        // Arrange
+        var tokens = new Token<ArithmeticType>[]
+        {
+            new(ArithmeticType.Number, left),
+            new(ArithmeticType.Multiply, "*"),
+            new(ArithmeticType.Number, right)
+        };
+        
+        var parser = new ArithmeticParser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+        
+        // Assert
+        Assert.AreEqual(expected, result);
+    }
+    
+    [DataTestMethod]
+    [DataRow("2", "2", 1)]
+    [DataRow("9", "3", 3)]
+    [DataRow("33", "3", 11)]
+    public void Parse_ExpressionContainingDivision(string left, string right, int expected)
+    {
+        // Arrange
+        var tokens = new Token<ArithmeticType>[]
+        {
+            new(ArithmeticType.Number, left),
+            new(ArithmeticType.Divide, "/"),
+            new(ArithmeticType.Number, right)
+        };
+        
+        var parser = new ArithmeticParser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+        
+        // Assert
+        Assert.AreEqual(expected, result);
+    }
 }
 
 
