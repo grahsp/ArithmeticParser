@@ -1,0 +1,3 @@
+[submodule "External/Lexer"]
+	path = External/Lexer
+	url = https://github.com/grahsp/Lexer.git
