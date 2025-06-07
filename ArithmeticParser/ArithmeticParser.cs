@@ -54,8 +54,19 @@ public class ArithmeticParser(IEnumerable<Token<ArithmeticType>> tokens)
 
     private Expression ParseFactor()
     {
-        var token = Consume(ArithmeticType.Number);
-        return new Number(int.Parse(token.Value));
+        if (Current.Type is ArithmeticType.Number)
+            return new Number(int.Parse(Consume(ArithmeticType.Number).Value));
+
+        if (Current.Type is ArithmeticType.LeftParanthesis)
+        {
+            Consume(ArithmeticType.LeftParanthesis);
+            var expression = ParseExpression();
+            Consume(ArithmeticType.RightParanthesis);
+
+            return expression;
+        }
+        
+        throw new Exception($"Expected a number or parenthesis but got {Current.Type}");
     }
 }
 
@@ -66,6 +77,8 @@ public enum ArithmeticType
     Minus,
     Multiply,
     Divide,
+    LeftParanthesis,
+    RightParanthesis,
     Whitespace,
 }
 

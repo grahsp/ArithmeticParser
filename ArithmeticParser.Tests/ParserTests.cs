@@ -121,6 +121,31 @@ public sealed class ParserTests
         // Assert
         Assert.AreEqual(expected, result);
     }
+
+    [TestMethod]
+    public void Parse_ExpressionContainingParantheses()
+    {
+         // Arrange
+         var tokens = new Token<ArithmeticType>[]
+         {
+             new(ArithmeticType.Number, "2"),
+             new(ArithmeticType.Multiply, "*"),
+             new(ArithmeticType.LeftParanthesis, "("),
+             new(ArithmeticType.Number, "2"),
+             new(ArithmeticType.Plus, "+"),
+             new(ArithmeticType.Number, "3"),
+             new(ArithmeticType.RightParanthesis, ")"),
+         };
+         
+         var parser = new ArithmeticParser(tokens);
+ 
+         // Act
+         var expression = parser.Parse();
+         var result = expression.Evaluate();
+         
+         // Assert
+         Assert.AreEqual(10, result);       
+    }
 }
 
 
