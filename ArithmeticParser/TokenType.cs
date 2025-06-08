@@ -9,6 +9,7 @@ public enum TokenType
     Slash,
     LeftParenthesis,
     RightParenthesis,
+    Pi,
     Sin,
     Cos,
     Tan,

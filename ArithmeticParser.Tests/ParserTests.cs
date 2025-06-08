@@ -279,6 +279,23 @@ public sealed class ParserTests
     }
 
     [TestMethod]
+    public void Parse_Pi_CorrectEvaluation()
+    {
+        var token = new Token<TokenType>(TokenType.Pi, "pi");
+        var parser = new Parser([token]);
+        
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+        
+        // Assert
+        Assert.AreEqual(Math.PI, result);
+        
+        // Root should be Literal
+        Assert.IsInstanceOfType<LiteralExpression>(expression);
+    }
+
+    [TestMethod]
     public void Parse_Expression_CorrectEvaluationAndTree()
     {
         // Arrange

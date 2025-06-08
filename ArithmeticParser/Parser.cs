@@ -85,8 +85,11 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
     private Expression ParsePrimary()
     {
         if (CurrentToken.Type is TokenType.Number)
-            return new LiteralExpression(double.Parse(ConsumeToken(TokenType.Number).Value));
+            return new LiteralExpression(double.Parse(ConsumeToken(TokenType.Number).Value, CultureInfo.InvariantCulture));
 
+        if (CurrentToken.Type is TokenType.Pi)
+            return new LiteralExpression(Math.PI);
+                
         if (CurrentToken.Type is TokenType.LeftParenthesis)
         {
             ConsumeToken(TokenType.LeftParenthesis);
