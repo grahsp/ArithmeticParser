@@ -2,36 +2,54 @@ using Lexer;
 
 namespace ArithmeticParser;
 
-public interface IExpression
+public abstract class Expression
 {
-    double Evaluate();
+    public double Evaluate()
+    {
+        var rawValue = EvaluateInternal();
+        return CleanValue(rawValue);
+    }
+
+    protected abstract double EvaluateInternal();
+
+    private static double CleanValue(double value, double epsilon = 1e-10)
+    {
+        if (Math.Abs(value) < epsilon)
+            return 0;
+
+        var rounded = Math.Round(value);
+        if (Math.Abs(value - rounded) < epsilon)
+            return rounded;
+
+        return value;
+    }
 }
 
-public class BinaryExpression(Token<TokenType> @operator, IExpression left, IExpression right) : IExpression
+public class BinaryExpression(Token<TokenType> @operator, Expression left, Expression right) : Expression
 {
     public Token<TokenType> Operator { get; } = @operator;
-    public IExpression Left { get; } = left;
-    public IExpression Right { get; } = right;
+    public Expression Left { get; } = left;
+    public Expression Right { get; } = right;
 
-    public double Evaluate()
+    protected override double EvaluateInternal()
     {
         return Operator.Type switch
         {
             TokenType.Plus => Left.Evaluate() + Right.Evaluate(),
             TokenType.Minus => Left.Evaluate() - Right.Evaluate(),
-            TokenType.Multiply => Left.Evaluate() * Right.Evaluate(),
-            TokenType.Divide => Left.Evaluate() / Right.Evaluate(),
+            TokenType.Star => Left.Evaluate() * Right.Evaluate(),
+            TokenType.Slash => Left.Evaluate() / Right.Evaluate(),
             _ => throw new InvalidOperationException($"Unsupported binary operator: {Operator.Type}")
         };
     }
 }
 
-public class UnaryExpression(Token<TokenType> @operator, IExpression operand) : IExpression
+public class UnaryExpression(Token<TokenType> @operator, Expression operand) : Expression
 {
     public Token<TokenType> Operator { get; } = @operator;
-    public IExpression Operand { get; } = operand;
+    public Expression Operand { get; } = operand;
 
-    public double Evaluate()
+    protected override double EvaluateInternal()
     {
         return Operator.Type switch
         {
@@ -42,9 +60,9 @@ public class UnaryExpression(Token<TokenType> @operator, IExpression operand) : 
     }
 }
 
-public class LiteralExpression(double value) : IExpression
+public class LiteralExpression(double value) : Expression
 {
     public double Value { get; } = value;
     
-    public double Evaluate() => Value;
+    protected override double EvaluateInternal() => Value;
 }
