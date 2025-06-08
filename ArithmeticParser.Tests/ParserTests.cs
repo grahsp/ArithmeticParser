@@ -118,7 +118,7 @@ public sealed class ParserTests
         var tokens = new Token<TokenType>[]
         {
             new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
-            new(TokenType.Multiply, "*"),
+            new(TokenType.Star, "*"),
             new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
             
@@ -135,7 +135,7 @@ public sealed class ParserTests
         // Root should be Binary with Multiply
         Assert.IsInstanceOfType<BinaryExpression>(expression);
         var binary = (BinaryExpression)expression;
-        Assert.AreEqual(TokenType.Multiply, binary.Operator.Type);
+        Assert.AreEqual(TokenType.Star, binary.Operator.Type);
             
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
@@ -158,7 +158,7 @@ public sealed class ParserTests
         var tokens = new Token<TokenType>[]
         {
             new(TokenType.Number, left.ToString(CultureInfo.InvariantCulture)),
-            new(TokenType.Divide, "/"),
+            new(TokenType.Slash, "/"),
             new(TokenType.Number, right.ToString(CultureInfo.InvariantCulture))
         };
 
@@ -175,7 +175,7 @@ public sealed class ParserTests
         // Root should be binary with Divide
         Assert.IsInstanceOfType<BinaryExpression>(expression);
         var binary = (BinaryExpression)expression;
-        Assert.AreEqual(TokenType.Divide, binary.Operator.Type);
+        Assert.AreEqual(TokenType.Slash, binary.Operator.Type);
 
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
@@ -186,6 +186,97 @@ public sealed class ParserTests
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
         Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
     }
+    
+    [DataTestMethod]
+    [DataRow(90, 1)]
+    [DataRow(0, 0)]
+    public void Parse_Sin_CorrectEvaluationAndTree(double value, double expected)
+    {
+        // Arrange
+        var tokens = new Token<TokenType>[]
+        {
+            new(TokenType.Sin, "sin"),
+            new(TokenType.LeftParenthesis, "("),
+            new(TokenType.Number, value.ToString(CultureInfo.InvariantCulture)),
+            new(TokenType.RightParenthesis, ")"),
+        };
+
+        var parser = new Parser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+
+
+        // Assert
+        Assert.AreEqual(expected, result);
+        
+        // Root should be Function of Sin
+        Assert.IsInstanceOfType<FunctionExpression>(expression);
+        var root = (FunctionExpression)expression;
+        Assert.AreEqual(TokenType.Sin, root.Function.Type);
+    }
+    
+    [DataTestMethod]
+    [DataRow(90, 0)]
+    [DataRow(0, 1)]
+    public void Parse_Cos_CorrectEvaluationAndTree(double value, double expected)
+    {
+        // Arrange
+        var tokens = new Token<TokenType>[]
+        {
+            new(TokenType.Cos, "cos"),
+            new(TokenType.LeftParenthesis, "("),
+            new(TokenType.Number, value.ToString(CultureInfo.InvariantCulture)),
+            new(TokenType.RightParenthesis, ")"),
+        };
+
+        var parser = new Parser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+
+
+        // Assert
+        Assert.AreEqual(expected, result);
+        
+        // Root should be Function of Cos
+        Assert.IsInstanceOfType<FunctionExpression>(expression);
+        var root = (FunctionExpression)expression;
+        Assert.AreEqual(TokenType.Cos, root.Function.Type);
+    }
+    
+    
+    [DataTestMethod]
+    [DataRow(45, 1)]
+    [DataRow(0, 0)]
+    public void Parse_Tan_CorrectEvaluationAndTree(double value, double expected)
+    {
+        // Arrange
+        var tokens = new Token<TokenType>[]
+        {
+            new(TokenType.Tan, "tan"),
+            new(TokenType.LeftParenthesis, "("),
+            new(TokenType.Number, value.ToString(CultureInfo.InvariantCulture)),
+            new(TokenType.RightParenthesis, ")"),
+        };
+
+        var parser = new Parser(tokens);
+
+        // Act
+        var expression = parser.Parse();
+        var result = expression.Evaluate();
+
+
+        // Assert
+        Assert.AreEqual(expected, result);
+        
+        // Root should be Function of Tan
+        Assert.IsInstanceOfType<FunctionExpression>(expression);
+        var root = (FunctionExpression)expression;
+        Assert.AreEqual(TokenType.Tan, root.Function.Type);
+    }
 
     [TestMethod]
     public void Parse_Expression_CorrectEvaluationAndTree()
@@ -195,10 +286,10 @@ public sealed class ParserTests
         {
             new(TokenType.LeftParenthesis, "("),
             new(TokenType.Number, "4"),
-            new(TokenType.Multiply, "*"),
+            new(TokenType.Star, "*"),
             new(TokenType.Number, "-2.5"),
             new(TokenType.RightParenthesis, ")"),
-            new(TokenType.Divide, "/"),
+            new(TokenType.Slash, "/"),
             new(TokenType.Number, "2"),
         };
     
@@ -215,7 +306,7 @@ public sealed class ParserTests
         // Root should be Binary with Divide
         Assert.IsInstanceOfType<BinaryExpression>(expression);
         var root = (BinaryExpression)expression;
-        Assert.AreEqual(TokenType.Divide, root.Operator.Type);
+        Assert.AreEqual(TokenType.Slash, root.Operator.Type);
         
         // Right child of root should be Literal(2)
         Assert.IsInstanceOfType<LiteralExpression>(root.Right);
@@ -224,7 +315,7 @@ public sealed class ParserTests
         // Left child of root should be Binary with Multiply
         Assert.IsInstanceOfType<BinaryExpression>(root.Left);
         var leftNode = (BinaryExpression)root.Left;
-        Assert.AreEqual(TokenType.Multiply, leftNode.Operator.Type);
+        Assert.AreEqual(TokenType.Star, leftNode.Operator.Type);
         
         // Left child of leftNode should be Literal(3)
         Assert.IsInstanceOfType<LiteralExpression>(leftNode.Left);

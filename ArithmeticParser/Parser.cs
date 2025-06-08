@@ -19,12 +19,12 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
         return _tokens[_position++];
     }
 
-    public IExpression Parse()
+    public Expression Parse()
     {
         return ParseExpression();
     }
 
-    private IExpression ParseExpression()
+    private Expression ParseExpression()
     {
         var left = ParseTerm();
 
@@ -39,11 +39,11 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
         return left;
     }
 
-    private IExpression ParseTerm()
+    private Expression ParseTerm()
     {
         var left = ParseFactor();
 
-        while (!IsAtEnd && CurrentToken.Type is TokenType.Multiply or TokenType.Divide)
+        while (!IsAtEnd && CurrentToken.Type is TokenType.Star or TokenType.Slash)
         {
             var @operator = ConsumeToken(CurrentToken.Type);
             var right = ParseFactor();
@@ -54,7 +54,7 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
         return left;
     }
 
-    private IExpression ParseFactor()
+    private Expression ParseFactor()
     {
         if (CurrentToken.Type is TokenType.Plus or TokenType.Minus)
         {
@@ -64,10 +64,25 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
             return new UnaryExpression(@operator, operand);
         }
 
+        return ParseFunction();
+    }
+
+    private Expression ParseFunction()
+    {
+        if (CurrentToken.Type is TokenType.Sin or TokenType.Cos or TokenType.Tan)
+        {
+            var function = ConsumeToken(CurrentToken.Type);
+            ConsumeToken(TokenType.LeftParenthesis);
+            var expression = ParseExpression();
+            ConsumeToken(TokenType.RightParenthesis);
+
+            return new FunctionExpression(function, expression);
+        }
+
         return ParsePrimary();
     }
 
-    private IExpression ParsePrimary()
+    private Expression ParsePrimary()
     {
         if (CurrentToken.Type is TokenType.Number)
             return new LiteralExpression(double.Parse(ConsumeToken(TokenType.Number).Value));

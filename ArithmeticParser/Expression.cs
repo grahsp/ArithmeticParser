@@ -17,7 +17,7 @@ public abstract class Expression
         if (Math.Abs(value) < epsilon)
             return 0;
 
-        var rounded = Math.Round(value);
+        double rounded = Math.Round(value);
         if (Math.Abs(value - rounded) < epsilon)
             return rounded;
 
@@ -56,6 +56,26 @@ public class UnaryExpression(Token<TokenType> @operator, Expression operand) : E
             TokenType.Plus => Operand.Evaluate(),
             TokenType.Minus => -Operand.Evaluate(),
             _ => throw new InvalidOperationException($"Unsupported unary operator {Operator.Type}")
+        };
+    }
+}
+
+public class FunctionExpression(Token<TokenType> function, Expression operand) : Expression
+{
+    public Token<TokenType> Function { get; } = function;
+    public Expression Operand { get; } = operand;
+
+    protected override double EvaluateInternal()
+    {
+        var degrees = Operand.Evaluate();
+        var radians = degrees * Math.PI / 180;
+        
+        return Function.Type switch
+        {
+            TokenType.Sin => Math.Sin(radians),
+            TokenType.Cos => Math.Cos(radians),
+            TokenType.Tan => Math.Tan(radians),
+            _ => throw new InvalidOperationException($"Unsupported function: {Function.Type}")
         };
     }
 }
