@@ -1,9 +1,13 @@
+using System.Globalization;
 using Lexer;
 
 namespace ArithmeticParser;
 
 public abstract class Expression
 {
+    public string Name => ToString();
+    public abstract Expression[] Children { get; }
+    
     public double Evaluate()
     {
         var rawValue = EvaluateInternal();
@@ -11,6 +15,7 @@ public abstract class Expression
     }
 
     protected abstract double EvaluateInternal();
+    public abstract override string ToString();
 
     private static double CleanValue(double value, double epsilon = 1e-10)
     {
@@ -30,6 +35,8 @@ public class BinaryExpression(Token<TokenType> @operator, Expression left, Expre
     public Token<TokenType> Operator { get; } = @operator;
     public Expression Left { get; } = left;
     public Expression Right { get; } = right;
+    
+    public override Expression[] Children => [Left, Right];
 
     protected override double EvaluateInternal()
     {
@@ -42,12 +49,16 @@ public class BinaryExpression(Token<TokenType> @operator, Expression left, Expre
             _ => throw new InvalidOperationException($"Unsupported binary operator: {Operator.Type}")
         };
     }
+
+    public override string ToString() => Operator.Value;
 }
 
 public class UnaryExpression(Token<TokenType> @operator, Expression operand) : Expression
 {
     public Token<TokenType> Operator { get; } = @operator;
     public Expression Operand { get; } = operand;
+    
+    public override Expression[] Children => [Operand];
 
     protected override double EvaluateInternal()
     {
@@ -58,12 +69,16 @@ public class UnaryExpression(Token<TokenType> @operator, Expression operand) : E
             _ => throw new InvalidOperationException($"Unsupported unary operator {Operator.Type}")
         };
     }
+    
+    public override string ToString() => Operator.Value;
 }
 
 public class FunctionExpression(Token<TokenType> function, Expression operand) : Expression
 {
     public Token<TokenType> Function { get; } = function;
     public Expression Operand { get; } = operand;
+    
+    public override Expression[] Children => [Operand];
 
     protected override double EvaluateInternal()
     {
@@ -78,11 +93,17 @@ public class FunctionExpression(Token<TokenType> function, Expression operand) :
             _ => throw new InvalidOperationException($"Unsupported function: {Function.Type}")
         };
     }
+    
+    public override string ToString() => Function.Value;
 }
 
 public class LiteralExpression(double value) : Expression
 {
     public double Value { get; } = value;
     
+    public override Expression[] Children => [];
+    
     protected override double EvaluateInternal() => Value;
+    
+    public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 }
