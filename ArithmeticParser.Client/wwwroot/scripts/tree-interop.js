@@ -1,26 +1,36 @@
 window.treeInterop = {
     render: function (elementId, data) {
-        const svg = d3.select("#" + elementId);
-        svg.selectAll("*").remove();
+        const container = document.getElementById("tree-container");
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
-        const width = 600;
-        const height = 400;
+        const zoom = d3.zoom()
+            .scaleExtent([0.2, 5])
+            .on("zoom", function (event) {
+                g.attr("transform", event.transform);
+            });
+
+        const initialTransform = d3.zoomIdentity
+            .translate(width / 2, 50)
+            .scale(1);
+        
+        const svg = d3
+            .select("#" + elementId)
+            .attr("width", width)
+            .attr("height", height)
+            .call(zoom);
+        
+        svg.selectAll("*").remove();
 
         const root = d3.hierarchy(data, d => d.children);
 
-        const treeLayout = d3.tree().size([width /2, height /2])
+        const treeLayout = d3.tree().nodeSize([150, 100])
         treeLayout(root);
 
         const g = svg
-            .attr("width", width)
-            .attr("height", height)
-            .call(d3.zoom()
-                .scaleExtent([1, 5])
-                .on("zoom", function (event) {
-                    g.attr("transform", event.transform);
-                }))
-            .append("g")
+            .append("g");
 
+        
         // Links
         g.selectAll(".link")
             .data(root.links())
@@ -42,13 +52,21 @@ window.treeInterop = {
             .attr("class", "node")
             .attr("transform", d => `translate(${d.x},${d.y})`);
 
-        node.append("circle")
-            .attr("r", 30)
-            .attr("fill", "#a2ead7");
+        node.append("rect")
+            .attr("x", -100 / 2)
+            .attr("y", -50/ 2)
+            .attr("width", 100)
+            .attr("height", 50)
+            .attr("rx", 10)
+            .attr("ry", 10)
+            .attr("fill", "#eaeacd");
 
         node.append("text")
             .attr("dy", 4)
             .attr("text-anchor", "middle")
             .text(d => d.data.name);
+        
+        
+        svg.call(zoom.transform, initialTransform);
     }
 };
