@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArithmeticParser", "Arithme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArithmeticParser.Tests", "ArithmeticParser.Tests\ArithmeticParser.Tests.csproj", "{0BFE028B-B5CF-48DE-98DA-949E8CB3A8D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArithmeticParser.Client", "ArithmeticParser.Client\ArithmeticParser.Client.csproj", "{230467B1-1361-4EAE-834A-BE9F94C6DA16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0BFE028B-B5CF-48DE-98DA-949E8CB3A8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BFE028B-B5CF-48DE-98DA-949E8CB3A8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BFE028B-B5CF-48DE-98DA-949E8CB3A8D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{230467B1-1361-4EAE-834A-BE9F94C6DA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{230467B1-1361-4EAE-834A-BE9F94C6DA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{230467B1-1361-4EAE-834A-BE9F94C6DA16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{230467B1-1361-4EAE-834A-BE9F94C6DA16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

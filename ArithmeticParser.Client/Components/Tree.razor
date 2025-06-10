@@ -1,0 +1,12 @@
+@inject IJSRuntime JS
+
+<svg id="tree-container" style="border: 1px solid black;"></svg>
+
+@code {
+    [Parameter] public Expression Node { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("treeInterop.render", "tree-container", Node);
+    }
+}
