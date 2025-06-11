@@ -1,4 +1,7 @@
 window.treeInterop = {
+    clear: function () {
+        d3.select("#tree-container").selectAll("*").remove();  
+    },
     render: function (elementId, data) {
         const container = document.getElementById("tree-container");
         const width = container.clientWidth;

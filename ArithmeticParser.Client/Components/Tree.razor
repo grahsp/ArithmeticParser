@@ -1,4 +1,4 @@
-@inject IJSRuntime JS
+@inject IJSRuntime Js
 
 <svg id="tree-container"></svg>
 
@@ -10,6 +10,6 @@
         if (Node is null)
             return;
         
-        await JS.InvokeVoidAsync("treeInterop.render", "tree-container", Node);
+        await Js.InvokeVoidAsync("treeInterop.render", "tree-container", Node);
     }
 }

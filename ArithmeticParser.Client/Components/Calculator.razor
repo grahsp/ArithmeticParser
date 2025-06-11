@@ -1,4 +1,5 @@
 @using Lexer
+@inject IJSRuntime Js
 
 <input type="text" @oninput="OnInputChanged" class="@(_validInput ? "valid" : "invalid")"/>
 
@@ -8,7 +9,7 @@
     private string _input = "0";
     private bool _validInput = true;
     
-    private Lexer<TokenType> _lexer;
+    private Lexer<TokenType> _lexer = null!;
     
     
     protected override void OnInitialized()
@@ -27,22 +28,30 @@
     {
         _input = e.Value?.ToString() ?? "";
         if (string.IsNullOrEmpty(_input))
+        {
+            await Js.InvokeVoidAsync("treeInterop.clear");
+
+            await OnParsed.InvokeAsync(null);
             return;
+        }
 
         _validInput = true;
-        
+
+        Expression? node = null;
         try
         {
             var tokens = _lexer.Tokenize(_input);
 
             var parser = new Parser(tokens);
-            var node = parser.Parse();
-
-            await OnParsed.InvokeAsync(node);
+            node = parser.Parse();
         }
         catch
         {
             _validInput = false;
+        }
+        finally
+        {
+            await OnParsed.InvokeAsync(node);
         }
     }
 }
