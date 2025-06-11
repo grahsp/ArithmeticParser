@@ -2,9 +2,43 @@
 {
 <div class="container" @onclick="Close">
     <div class="message-box" @onclick:stopPropagation="true">
-        <h2>Instructions</h2>
-        <p>Do math!</p>
-    </div>
+        <h2>🧮 Expression Syntax Help</h2>
+
+        <h3>✅ Supported Operators:</h3>
+        <ul>
+            <li><code>+</code> – Addition</li>
+            <li><code>-</code> – Subtraction (supports negative numbers too)</li>
+            <li><code>*</code> – Multiplication</li>
+            <li><code>/</code> – Division</li>
+            <li><code>( )</code> – Parentheses for grouping</li>
+        </ul>
+
+        <h3>✅ Supported Constants:</h3>
+        <ul>
+            <li><code>pi</code> – The constant π (≈ 3.14159)</li>
+        </ul>
+
+        <h3>✅ Supported Functions:</h3>
+        <ul>
+            <li><code>sin(x)</code> – Sine</li>
+            <li><code>cos(x)</code> – Cosine</li>
+            <li><code>tan(x)</code> – Tangent</li>
+        </ul>
+
+        <h3>🔢 Numbers:</h3>
+        <ul>
+            <li>Whole numbers: <code>42</code>, <code>-5</code></li>
+            <li>Decimal numbers: <code>3.14</code>, <code>-0.5</code></li>
+        </ul>
+
+        <h3>📝 Examples:</h3>
+        <ul>
+            <li><code>sin(pi / 2)</code></li>
+            <li><code>(1 + 2) * 3.5</code></li>
+            <li><code>-4 + tan(0.5)</code></li>
+        </ul>
+
+        <p>Enter your expression in the input field above. It will be parsed and visualized automatically.</p>    </div>
 </div>
 }
 

@@ -1,7 +1,12 @@
 @using Lexer
 @inject IJSRuntime Js
 
-<input type="text" @oninput="OnInputChanged" class="@(_validInput ? "valid" : "invalid")"/>
+<input
+    type="text"
+    placeholder="Enter an expression here..."
+    @oninput="OnInputChanged"
+    class="@(_validInput ? "valid" : "invalid")"
+/>
 
 @code {
     [Parameter] public EventCallback<Expression> OnParsed { get; set; }
@@ -56,6 +61,7 @@
         }
         catch
         {
+            Console.WriteLine("bajs");
             _validInput = false;
         }
         finally
