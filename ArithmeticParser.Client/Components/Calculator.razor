@@ -16,9 +16,18 @@
     {
         TokenRule<TokenType>[] rules =
         [
-            new (TokenType.Number, @"\d+"),
+            new (TokenType.Number, @"-?\d+(\.\d+)?"),
             new (TokenType.Plus, @"\+"),
             new (TokenType.Minus, @"\-"),
+            new (TokenType.Star, @"\*"),
+            new (TokenType.Slash, @"\/"),
+            new (TokenType.LeftParenthesis, @"\("),
+            new (TokenType.RightParenthesis, @"\)"),
+            new (TokenType.Pi, "pi"),
+            new (TokenType.Sin, "sin"),
+            new (TokenType.Cos, "cos"),
+            new (TokenType.Tan, "tan"),
+            new (TokenType.Whitespace, @"\s+", ignore: true),
         ];
 
         _lexer = new Lexer<TokenType>(rules);
