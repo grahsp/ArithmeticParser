@@ -3,7 +3,7 @@ input {
     height: 2rem;
     width: clamp(300px, 40%, 500px);
     padding: 0 0.3rem;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(10px);
     border: none;
     border-radius: 0.5rem;
