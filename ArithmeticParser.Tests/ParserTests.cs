@@ -59,12 +59,12 @@ public sealed class ParserTests
         
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(root.Left);
-        Assert.AreEqual(((LiteralExpression)root.Left).Value, left);
+        Assert.AreEqual(((LiteralExpression)root.Left).Literal, left);
         
         
         // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(root.Right);
-        Assert.AreEqual(((LiteralExpression)root.Right).Value, right);
+        Assert.AreEqual(((LiteralExpression)root.Right).Literal, right);
     }
 
     [DataTestMethod]
@@ -99,12 +99,12 @@ public sealed class ParserTests
             
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
-        Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
+        Assert.AreEqual(((LiteralExpression)binary.Left).Literal, left);
             
             
         // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
-        Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
+        Assert.AreEqual(((LiteralExpression)binary.Right).Literal, right);
     }
     
     [DataTestMethod]
@@ -139,12 +139,12 @@ public sealed class ParserTests
             
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
-        Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
+        Assert.AreEqual(((LiteralExpression)binary.Left).Literal, left);
             
             
         // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
-        Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
+        Assert.AreEqual(((LiteralExpression)binary.Right).Literal, right);
     }
 
     [DataTestMethod]
@@ -179,12 +179,12 @@ public sealed class ParserTests
 
         // Left child of root should be Literal equal to left
         Assert.IsInstanceOfType<LiteralExpression>(binary.Left);
-        Assert.AreEqual(((LiteralExpression)binary.Left).Value, left);
+        Assert.AreEqual(((LiteralExpression)binary.Left).Literal, left);
 
 
         // Right child of root should be Literal equal to right
         Assert.IsInstanceOfType<LiteralExpression>(binary.Right);
-        Assert.AreEqual(((LiteralExpression)binary.Right).Value, right);
+        Assert.AreEqual(((LiteralExpression)binary.Right).Literal, right);
     }
     
     [DataTestMethod]
@@ -327,7 +327,7 @@ public sealed class ParserTests
         
         // Right child of root should be Literal(2)
         Assert.IsInstanceOfType<LiteralExpression>(root.Right);
-        Assert.AreEqual(2, ((LiteralExpression)root.Right).Value);
+        Assert.AreEqual(2, ((LiteralExpression)root.Right).Literal);
         
         // Left child of root should be Binary with Multiply
         Assert.IsInstanceOfType<BinaryExpression>(root.Left);
@@ -336,10 +336,10 @@ public sealed class ParserTests
         
         // Left child of leftNode should be Literal(3)
         Assert.IsInstanceOfType<LiteralExpression>(leftNode.Left);
-        Assert.AreEqual(4, ((LiteralExpression)leftNode.Left).Value);
+        Assert.AreEqual(4, ((LiteralExpression)leftNode.Left).Literal);
         
         // Right child of leftNode should be Literal(-2)
         Assert.IsInstanceOfType<LiteralExpression>(leftNode.Right);
-        Assert.AreEqual(-2.5, ((LiteralExpression)leftNode.Right).Value);
+        Assert.AreEqual(-2.5, ((LiteralExpression)leftNode.Right).Literal);
     }
 }

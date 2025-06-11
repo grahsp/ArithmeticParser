@@ -27,7 +27,7 @@ window.treeInterop = {
 
         const root = d3.hierarchy(data, d => d.children);
 
-        const treeLayout = d3.tree().nodeSize([175, 125])
+        const treeLayout = d3.tree().nodeSize([300, 150])
         treeLayout(root);
 
         const g = svg
@@ -56,20 +56,26 @@ window.treeInterop = {
             .attr("transform", d => `translate(${d.x},${d.y})`);
 
         node.append("rect")
-            .attr("x", -100 / 2)
-            .attr("y", -50/ 2)
-            .attr("width", 100)
-            .attr("height", 50)
+            .attr("x", -250/2)
+            .attr("y", -25)
+            .attr("width", 250)
+            .attr("height", 60)
             .attr("rx", 10)
             .attr("ry", 10)
             .attr("fill", "#5a5a3f");
 
         node.append("text")
-            .attr("dy", 6)
             .attr("text-anchor", "middle")
             .attr("fill", "#ffffff")
             .attr("font-size", 20)
-            .text(d => d.data.name);
+            .selectAll("tspan")
+            .data(d => [`Node: ${d.data.name}`, `Total: ${d.data.value}`])
+            .enter()
+            .append("tspan")
+            .attr("x", 0)
+            .attr("dy", (d, i) => i === 0 ? 0 : "1.2em")
+            .text(d => d);
+
         
         
         svg.call(zoom.transform, initialTransform);

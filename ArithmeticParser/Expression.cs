@@ -6,6 +6,7 @@ namespace ArithmeticParser;
 public abstract class Expression
 {
     public string Name => ToString();
+    public double Value => Evaluate();
     public abstract Expression[] Children { get; }
     
     public double Evaluate()
@@ -97,13 +98,13 @@ public class FunctionExpression(Token<TokenType> function, Expression operand) :
     public override string ToString() => Function.Value;
 }
 
-public class LiteralExpression(double value) : Expression
+public class LiteralExpression(double literal) : Expression
 {
-    public double Value { get; } = value;
+    public double Literal { get; } = literal;
     
     public override Expression[] Children => [];
     
-    protected override double EvaluateInternal() => Value;
+    protected override double EvaluateInternal() => Literal;
     
-    public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
+    public override string ToString() => Literal.ToString(CultureInfo.InvariantCulture);
 }
