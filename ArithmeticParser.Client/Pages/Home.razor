@@ -3,6 +3,17 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<Tree Node="_node" />
 
-<Tree></Tree>
+<div style="display: flex; justify-content: center; padding:  1rem;">
+    <Calculator OnParsed="Test" />
+</div>
+
+@code {
+    private Expression? _node;
+    
+    private void Test(Expression node)
+    {
+        _node = node;
+    }
+}

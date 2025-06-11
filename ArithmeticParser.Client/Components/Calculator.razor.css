@@ -1,0 +1,19 @@
+input {
+    font-size: 1.4rem;
+    height: 2rem;
+    width: clamp(300px, 40%, 500px);
+    padding: 0 0.3rem;
+    background-color: transparent;
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 0.5rem;
+    outline: 2px solid black;
+}
+
+input.valid {
+    outline-color: #2baecb;
+}
+
+input.invalid {
+    outline-color: #f36733;
+}

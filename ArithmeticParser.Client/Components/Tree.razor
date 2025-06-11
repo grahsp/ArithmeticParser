@@ -3,10 +3,13 @@
 <svg id="tree-container"></svg>
 
 @code {
-    [Parameter] public Expression Node { get; set; }
+    [Parameter] public Expression? Node { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (Node is null)
+            return;
+        
         await JS.InvokeVoidAsync("treeInterop.render", "tree-container", Node);
     }
 }

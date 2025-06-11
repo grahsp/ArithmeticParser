@@ -1,0 +1,48 @@
+@using Lexer
+
+<input type="text" @oninput="OnInputChanged" class="@(_validInput ? "valid" : "invalid")"/>
+
+@code {
+    [Parameter] public EventCallback<Expression> OnParsed { get; set; }
+    
+    private string _input = "0";
+    private bool _validInput = true;
+    
+    private Lexer<TokenType> _lexer;
+    
+    
+    protected override void OnInitialized()
+    {
+        TokenRule<TokenType>[] rules =
+        [
+            new (TokenType.Number, @"\d+"),
+            new (TokenType.Plus, @"\+"),
+            new (TokenType.Minus, @"\-"),
+        ];
+
+        _lexer = new Lexer<TokenType>(rules);
+    }
+
+    private async Task OnInputChanged(ChangeEventArgs e)
+    {
+        _input = e.Value?.ToString() ?? "";
+        if (string.IsNullOrEmpty(_input))
+            return;
+
+        _validInput = true;
+        
+        try
+        {
+            var tokens = _lexer.Tokenize(_input);
+
+            var parser = new Parser(tokens);
+            var node = parser.Parse();
+
+            await OnParsed.InvokeAsync(node);
+        }
+        catch
+        {
+            _validInput = false;
+        }
+    }
+}

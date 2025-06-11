@@ -11,7 +11,7 @@ window.treeInterop = {
             });
 
         const initialTransform = d3.zoomIdentity
-            .translate(width / 2, 50)
+            .translate(width / 2, 100)
             .scale(1);
         
         const svg = d3
