@@ -1,0 +1,19 @@
+@if (Visible)
+{
+<div class="container" @onclick="Close">
+    <div class="message-box" @onclick:stopPropagation="true">
+        <h2>Instructions</h2>
+        <p>Do math!</p>
+    </div>
+</div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+
+    private async Task Close()
+    {
+        await VisibleChanged.InvokeAsync(false);
+    }
+}

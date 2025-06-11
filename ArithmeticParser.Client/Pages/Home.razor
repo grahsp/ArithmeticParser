@@ -3,19 +3,21 @@
 
 <PageTitle>Home</PageTitle>
 
-<div style="display: flex; justify-content: center; padding:  1rem;">
-    <Calculator OnParsed="Test" />
+<Help
+    Visible="_isHelpVisible"
+    VisibleChanged="@((bool value) => _isHelpVisible = value)"
+/>
+
+<div class="container">
+    <div class="toolbar">
+        <Calculator OnParsed="@((Expression node) => _node = node)"/>
+        <button class="help-button" @onclick="@(() => _isHelpVisible = true)">?</button>
+    </div>
 </div>
 
 <Tree Node="_node" />
 
-
-
 @code {
+    private bool _isHelpVisible = true;
     private Expression? _node;
-    
-    private void Test(Expression node)
-    {
-        _node = node;
-    }
 }
