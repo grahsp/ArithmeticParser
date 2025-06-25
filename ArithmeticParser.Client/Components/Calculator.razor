@@ -21,7 +21,7 @@
     {
         TokenRule<TokenType>[] rules =
         [
-            new (TokenType.Number, @"-?\d+(\.\d+)?"),
+            new (TokenType.Number, @"\d+(\.\d+)?"),
             new (TokenType.Plus, @"\+"),
             new (TokenType.Minus, @"\-"),
             new (TokenType.Star, @"\*"),
