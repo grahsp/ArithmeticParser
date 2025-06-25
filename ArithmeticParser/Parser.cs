@@ -41,30 +41,17 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
 
     private Expression ParseTerm()
     {
-        var left = ParseFactor();
+        var left = ParseFunction();
 
         while (!IsAtEnd && CurrentToken.Type is TokenType.Star or TokenType.Slash)
         {
             var @operator = ConsumeToken(CurrentToken.Type);
-            var right = ParseFactor();
+            var right = ParseFunction();
 
             left = new BinaryExpression(@operator, left, right);
         }
 
         return left;
-    }
-
-    private Expression ParseFactor()
-    {
-        if (CurrentToken.Type is TokenType.Plus or TokenType.Minus)
-        {
-            var @operator = ConsumeToken(CurrentToken.Type);
-            var operand = ParsePrimary();
-            
-            return new UnaryExpression(@operator, operand);
-        }
-
-        return ParseFunction();
     }
 
     private Expression ParseFunction()
@@ -84,6 +71,14 @@ public class Parser(IEnumerable<Token<TokenType>> tokens)
 
     private Expression ParsePrimary()
     {
+        if (CurrentToken.Type is TokenType.Plus or TokenType.Minus)
+        {
+            var @operator = ConsumeToken(CurrentToken.Type);
+            var operand = ParsePrimary();
+
+            return new UnaryExpression(@operator, operand);
+        }
+        
         if (CurrentToken.Type is TokenType.Number)
             return new LiteralExpression(double.Parse(ConsumeToken(TokenType.Number).Value, CultureInfo.InvariantCulture));
 

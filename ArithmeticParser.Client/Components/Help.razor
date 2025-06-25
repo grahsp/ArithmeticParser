@@ -2,6 +2,7 @@
 {
 <div class="container" @onclick="Close">
     <div class="message-box" @onclick:stopPropagation="true">
+        <button class="close-button" @onclick="Close">X</button>
         <h2>🧮 Expression Syntax Help</h2>
 
         <h3>✅ Supported Operators:</h3>
@@ -38,7 +39,8 @@
             <li><code>-4 + tan(0.5)</code></li>
         </ul>
 
-        <p>Enter your expression in the input field above. It will be parsed and visualized automatically.</p>    </div>
+        <p>Enter your expression in the input field above. It will be parsed and visualized automatically.</p>
+    </div>
 </div>
 }
 
